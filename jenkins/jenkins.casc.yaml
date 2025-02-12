@@ -20,9 +20,9 @@ jenkins:
         connectTimeout: 5
         templates:
           - name: "jnlp-agent"
-            image: "jenkins/inbound-agent:latest"  # Use the inbound agent image or another image of your choice
+            image: "jenkins/inbound-agent:latest"
             workingDir: "/home/jenkins/agent"
-            command: "cat"  # Required, as the pod runs as an agent container
+            command: "cat"
             ttyEnabled: true
             resourceRequestCpu: "100m"
             resourceRequestMemory: "512Mi"
@@ -42,6 +42,17 @@ jenkins:
         name: "All"
   scmCheckoutRetryCount: 3
 
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - usernamePassword:
+              scope: GLOBAL
+              id: "github-credentials"
+              description: "GitHub credentials using PAT"
+              username: "your_github_username"  # Placeholder, already stored in Jenkins
+              password: "your_github_pat"  # Placeholder, already stored in Jenkins
+
 jobs:
   - pipelineJob:
       name: "MyPipelineJob"
@@ -53,5 +64,5 @@ jobs:
                 - "*/main"
               extensions: []
               remote: 'https://github.com/ankit-cn-47/jenkins-dynamic'
-              credentialsId: 'github-credentials'  # Replace with your GitHub credentials ID
+              credentialsId: 'github-credentials'
           scriptPath: "jenkins/jenkinsfile"

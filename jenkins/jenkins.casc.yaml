@@ -29,8 +29,9 @@ jenkins:
             resourceLimitCpu: "1"
             resourceLimitMemory: "2Gi"
             EnvVars:
-              - key: "JAVA_OPTS"
-                value: "-Xmx1024m"
+              - envVars:
+                  key: "JAVA_OPTS"
+                  value: "-Xmx1024m"
   crumbIssuer:
     standard: true
   updateCenter:

@@ -1,0 +1,62 @@
+name: Security Scan
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  snyk-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up Python and Node.js
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+          npm install
+
+      - name: Install Snyk
+        run: npm install -g snyk
+
+      - name: Run Snyk Security Scan (Python) with JSON Output
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk test --file=requirements.txt --package-manager=pip --json > snyk-python-report.json || true
+
+      - name: Run Snyk Security Scan (Node.js) with JSON Output
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk test --file=package.json --package-manager=npm --json > snyk-node-report.json || true
+
+      - name: Filter High Severity Issues (Python)
+        run: |
+          jq '.issues[] | select(.severity == "high") | {id, severity, title, package, version}' snyk-python-report.json > snyk-python-high-severity.json || true
+
+      - name: Filter High Severity Issues (Node.js)
+        run: |
+          jq '.issues[] | select(.severity == "high") | {id, severity, title, package, version}' snyk-node-report.json > snyk-node-high-severity.json || true
+
+      - name: Format Snyk High Severity Report
+        run: |
+          echo "*Snyk High Severity Security Report:*" > snyk-report.txt
+          echo "---------------------------------" >> snyk-report.txt
+          cat snyk-python-high-severity.json >> snyk-report.txt
+          echo "---------------------------------" >> snyk-report.txt
+          cat snyk-node-high-severity.json >> snyk-report.txt
+          echo "---------------------------------" >> snyk-report.txt
+
+      - name: Send High Severity Snyk Report to Slack
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\"$(awk '{printf \"%s\\n\", $0}' snyk-report.txt | head -n 30)\"}" \
+          ${{ secrets.SLACK_WEBHOOK_URL }}

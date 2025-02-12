@@ -28,6 +28,10 @@ jenkins:
             resourceRequestMemory: "512Mi"
             resourceLimitCpu: "1"
             resourceLimitMemory: "2Gi"
+            envVars:
+              - envVar:
+                  key: "JAVA_OPTS"
+                  value: "-Xmx1024m"
         namespace: "jenkins"
   crumbIssuer:
     standard: true

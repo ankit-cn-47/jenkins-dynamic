@@ -1,0 +1,60 @@
+pipeline {
+    agent {
+        kubernetes {
+            yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    jenkins-agent: true
+spec:
+  containers:
+  - name: build-container
+    image: maven:3.8.5-openjdk-17
+    command: ["/bin/sh", "-c"]
+    args: ["cat"]
+    volumeMounts:
+      - mountPath: "/workspace"
+        name: workspace-volume
+  volumes:
+  - name: workspace-volume
+    persistentVolumeClaim:
+      claimName: jenkins-agent-pvc
+"""
+        }
+    }
+    
+    stages {
+        stage('Clone Repository') {
+            steps {
+                script {
+                    sh 'git clone https://github.com/example/repo.git /workspace/repo'
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                container('build-container') {
+                    sh 'cd /workspace/repo && mvn clean install'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                container('build-container') {
+                    sh 'cd /workspace/repo && mvn test'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                container('build-container') {
+                    sh 'cd /workspace/repo && mvn deploy'
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,24 @@
+ Configure Jenkins Kubernetes Plugin for Dynamic Pod Scheduling
+Install the Kubernetes Plugin in Jenkins
+Go to Jenkins Dashboard → Manage Jenkins → Manage Plugins.
+Install Kubernetes Plugin (Kubernetes).
+Configure Kubernetes in Jenkins
+Manage Jenkins → Configure System → Cloud.
+
+Add a new Kubernetes Cloud configuration:
+
+Kubernetes URL: https://kubernetes.default.svc
+Jenkins URL: http://jenkins-service.jenkins.svc:8080
+Jenkins tunnel: jenkins-service.jenkins.svc:50000
+Namespace: jenkins
+Define a Jenkins Agent Pod Template:
+
+Name: jenkins-agent
+Labels: jnlp
+Container Template:
+Name: jnlp
+Docker Image: jenkins/inbound-agent
+Command: /bin/sh -c
+Arguments: cat
+
+For CasC support install Configuration as Code plugin

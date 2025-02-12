@@ -43,16 +43,16 @@ jenkins:
   #       name: "All"
   # scmCheckoutRetryCount: 3
 
-# credentials:
-#   system:
-#     domainCredentials:
-#       - credentials:
-#           - usernamePassword:
-#               scope: GLOBAL
-#               id: "github-credentials"
-#               description: "GitHub credentials using PAT"
-#               username: "your_github_username"  # Placeholder, already stored in Jenkins
-#               password: "your_github_pat"  # Placeholder, already stored in Jenkins
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - usernamePassword:
+              scope: GLOBAL
+              id: "github-credentials"
+              description: "GitHub credentials using PAT"
+              username: "your_github_username"  # Placeholder, already stored in Jenkins
+              password: "your_github_pat"  # Placeholder, already stored in Jenkins
 
 jobs:
   - pipelineJob:

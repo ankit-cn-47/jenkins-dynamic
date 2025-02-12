@@ -23,23 +23,15 @@ jenkins:
   scmCheckoutRetryCount: 3
 
 jobs:
-  - script: |
-      pipeline {
-        agent any
-        stages {
-          stage('Checkout') {
-            steps {
-              git credentialsId: 'github-credentials-id', url: 'https://github.com/ankit-cn-47/jenkins-dynamic'
-            }
-          }
-          stage('Run Jenkinsfile') {
-            steps {
-              script {
-                def jenkinsfile = load 'jenkins/jenkinsfile'
-                echo "Executing Jenkinsfile from repository"
-                jenkinsfile()
-              }
-            }
-          }
-        }
-      }
+  - pipelineJob:
+      name: "MyPipelineJob"
+      definition:
+        cpsScm:
+          scm:
+            git:
+              branches: 
+                - "*/main"  # or whichever branch you want to use
+              extensions: []
+              remote: 'https://github.com/ankit-cn-47/jenkins-dynamic'
+              credentialsId: 'github-credentials-id'  # Replace with your GitHub credentials ID
+          scriptPath: "jenkins/jenkinsfile"  # Path to the Jenkinsfile inside the repo

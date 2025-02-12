@@ -4,22 +4,42 @@ jenkins:
   systemMessage: "Configured by Jenkins Configuration as Code (JCasC)"
   securityRealm:
     local:
+      allowsSignup: false
       users:
         - id: "admin"
           password: "admin_password"
-          permissions:
-            - "admin"
   authorizationStrategy:
-    anyoneCanDoJob: false
-    allowAnonymousRead: false
-  clouds: []
+    globalMatrix:
+      permissions:
+        - "Overall/Administer:admin"
+  clouds:
+    - kubernetes:
+        name: "Kubernetes Cloud"
+        serverUrl: "https://kubernetes.default.svc"
+        kubeConfig: "/var/jenkins_home/.kube/config"  # Optional: Set the Kube config file if needed
+        containerCap: 10  # Maximum number of containers (pods) that Jenkins can launch simultaneously
+        connectTimeout: 5
+        containerTemplates:
+          - name: "jnlp-agent"
+            image: "jenkins/inbound-agent:latest"  # Use the inbound agent image or another image of your choice
+            workingDir: "/home/jenkins/agent"
+            command: "cat"  # Required, as the pod runs as an agent container
+            ttyEnabled: true
+            resourceRequestCpu: "100m"
+            resourceRequestMemory: "512Mi"
+            resourceLimitCpu: "1"
+            resourceLimitMemory: "2Gi"
+            envVars:
+              - name: "JAVA_OPTS"
+                value: "-Xmx1024m"
   crumbIssuer:
-    enable: true
+    standard: true
   updateCenter:
-    updateSite: "https://updates.jenkins.io"
+    sites:
+      - id: "default"
+        url: "https://updates.jenkins.io"
   views:
     - name: "All"
-      filter: "All"
   scmCheckoutRetryCount: 3
 
 jobs:
@@ -30,8 +50,8 @@ jobs:
           scm:
             git:
               branches: 
-                - "*/main"  # or whichever branch you want to use
+                - "*/main"
               extensions: []
               remote: 'https://github.com/ankit-cn-47/jenkins-dynamic'
-              credentialsId: 'github-credentials-id'  # Replace with your GitHub credentials ID
-          scriptPath: "jenkins/jenkinsfile"  # Path to the Jenkinsfile inside the repo
+              credentialsId: 'github-credentials'  # Replace with your GitHub credentials ID
+          scriptPath: "jenkins/jenkinsfile"

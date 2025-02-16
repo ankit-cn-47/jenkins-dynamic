@@ -68,7 +68,7 @@ jenkins:
         serviceAccount: "jenkins"
         yamlMergeStrategy: "override"
       - containers:
-        - image: "maven:3.9.9-amazoncorretto-8-alpine"
+        - image: "maven:3.9.9-amazoncorretto-17-alpine"
           livenessProbe:
             failureThreshold: 0
             initialDelaySeconds: 0
@@ -99,7 +99,7 @@ jenkins:
         namespace: "jenkins"
         yamlMergeStrategy: "override"
       - containers:
-        - image: "jenkins/inbound-agent:latest"
+        - image: "inbound-agent:latest-alpine3.21-jdk17"
           livenessProbe:
             failureThreshold: 0
             initialDelaySeconds: 0

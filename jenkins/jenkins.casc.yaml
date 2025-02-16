@@ -286,16 +286,16 @@ tool:
   mavenGlobalConfig:
     globalSettingsProvider: "standard"
     settingsProvider: "standard"
-
 jobs:
   - pipelineJob:
-      name: "NodeJS-job"
+      name: "MyPipelineJob"
       definition:
         cpsScm:
           scm:
             git:
-              branches:
+              branches: 
                 - "*/main"
-              remote: 'https://github.com/ankit-cn-47/jenkins-dynamic'
-              credentialsId: 'github-credentials'
+              extensions: []
+              remote: 'https://github.com/ankit-cn-47/jenkins-dynamic.git'
+              credentialsId: 'github-credential'
           scriptPath: "jenkins/jenkinsfile"

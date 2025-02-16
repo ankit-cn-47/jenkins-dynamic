@@ -1,34 +1,291 @@
 credentials:
   system:
     domainCredentials:
-      - credentials:
-          - usernamePassword:
-              id: "github-credentials"
-              password: "{AQAAABAAAAAwAOmzDF/ztlBjQYPoLzzOz+4UH2UuI00Xdlc0ZJM3YitZg0CGtK+qiuXSG2aXmWnIFJ2GriyPDs+e/tLhCclP2w==}"
-              scope: GLOBAL
-              username: "ankit-cn-47"
-
+    - credentials:
+      - usernamePassword:
+          id: "github-credentials"
+          password: "{AQAAABAAAAAwAOmzDF/ztlBjQYPoLzzOz+4UH2UuI00Xdlc0ZJM3YitZg0CGtK+qiuXSG2aXmWnIFJ2GriyPDs+e/tLhCclP2w==}"
+          scope: GLOBAL
+          username: "ankit-cn-47"
+      - string:
+          description: "sa-k8s-token"
+          id: "sa-k8s-token"
+          scope: GLOBAL
+          secret: "{AQAAABAAAAOwrZPFXgXRqjMECAffZX1pzvfWgRhfc0QJDSn5XSFlKQluWKDGdPoNHYfOYr9smtPvvAffGvTT6DtNsukevKc0pty32ivS0AEIbPRV2aCqqChhlQ11RA/9pSVbNHOcf8AJSsDCuTJibiTJHbaSk2VD2I7iA7eQdnf9cGQiVGfftqZ0FpSWzQLq2dVrSlTUgY/UqfPwvHTUx3SggP0vsy1iR/MbS9JDYxOfMmPKCqFL0lW9gw8Hgpa3UV3x9HEoL0Xt8bavqgsk5Gmte0KdTVqSrzTqeAZBiqStMzJ5MInEe6kDJIHSouPBCFYMW8ZKaxotuZDr4RHhf+2tGX7TY6Tv0h77GOS9A7s4pws3yN1CYJGjUgqXl1vPT9MJ4r3uOP+6GVce3XakIIdlUSAsGJtSSlZQydzSaj4rCGH2k66/9yVaNiSqGJd9PkA2Xy3Lfy2uacHXK4ZMTkHhkO1ZivMR/dt4otFECuvC6vzyS5Ko5ioamgL9ld3HFQ0odV7++x1n47jCBJRiyQP9s7ybpXkbbAzwQ5aWtjV7mppOLEpEZ9o8DBRQuPaGos0AaRaNjcHXJhajLAUiyIQ3Lv8g5mgYOGjwKn3PZ/QDpL1mgjhUVHaJ8T9CJRbpQycjwVKbOwaokjS1ar/+IB3cKMyQfbjqevDNZkcsMmBphgEbNZHN2XLD/7MliYl4H9eSW0Z0tJ89GMErOUU/i+JUDzSdMlb4s1wXOcVQw/plz+2jBb2tleCyi9rRBqjU1hQjyzyEmA0YJyhP+rcs7Tkv/uqAj1kbvIx+3Lm8NGI5vWxzPmXxQlMBnjXITb82D/XZy4cZGNGlAXAZ6sPs3+06gaGyAk/0UYB5q1dMz7wuJhVtUETp7dXjgPLxdkS6gAgEObL0jnQHFTyRnUM+CyN8ZVdMAoJfqe2SU+7r2k48lJOyshmfTx7EaK6L0KhCpZaskG6GT2Fl1tbTBrKZu0KkEZQ6OJQOGZ9krX6YTgWTf2C/Fg6TvvWF/t26u7O+pSBNFL+2TKryFZjKBKKroxUSc3pDoBou8GUMN97UUsUPmtlwVKAFstP6HyLkGVwuSapJjaaRHfJ2/HyGfQ0s0vqHuvIIbf/SNpaTPA//ykUvuPjyRZoF/Lg37js4goqCCzNGtGpiwR3NNXHLjaW8xOZXLyCe7NGtRjCNqkIB0HWQZjNJDdN/BDsMWOESO4UnuWu4pbRTcmJBu6QyJnhq09IDQqwMQbdSVlcLpCwlyExiPRkXE2yir//9gh1CugTkN3eJM0wxvBoh}"
 jenkins:
   authorizationStrategy:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: false
   clouds:
-    - kubernetes:
-        containerCap: 10
-        name: "Kubernetes"
+  - kubernetes:
+      containerCap: 10
+      containerCapStr: "10"
+      credentialsId: "sa-k8s-token"
+      garbageCollection:
+        timeout: 300
+      jenkinsTunnel: "jenkins-service:50000"
+      jenkinsUrl: "http://jenkins-service:8080"
+      jnlpregistry: "https://index.docker.io/v1/"
+      name: "Kubernetes"
+      namespace: "jenkins"
+      serverCertificate: |
+        -----BEGIN CERTIFICATE-----
+        MIIDBTCCAe2gAwIBAgIIBzdgHZam+OgwDQYJKoZIhvcNAQELBQAwFTETMBEGA1UE
+        AxMKa3ViZXJuZXRlczAeFw0yNTAxMjYxNzAxNDlaFw0zNTAxMjQxNzA2NDlaMBUx
+        EzARBgNVBAMTCmt1YmVybmV0ZXMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+        AoIBAQCuayOhBeKDoIlh+7KZuviTShcf32OC19Rki9jfiJPV5gLydLzYMnz9eAue
+        N2mkS4fEIboDV2LqebTHOs+h9+lkVUqcwQPb+qchkDeV2rk3W1Z6qBRTC9OqkneC
+        sgk/MX4F49fsTS3cCfigSaKX9symeVL1dcy+2Cq4TQAsxBO3nButy12TD3jB+Elt
+        7jRzmH7/7pOGFqjDmHnc6nrzzNSIPl1M4DNXXxe0Iesp5lu86LjSEkugYGoppndG
+        AggQIPeEnmiNZBsLGlHE9Wo8pYJGgDU+H2fhV6lYhSkOW2Z5Olj3upV/f26/eRWg
+        eK88T+lvqr+7+CNEdTtW3Q0mXNIhAgMBAAGjWTBXMA4GA1UdDwEB/wQEAwICpDAP
+        BgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBTRB3h6nhSzUQWRvmu+wNi9wF5lfzAV
+        BgNVHREEDjAMggprdWJlcm5ldGVzMA0GCSqGSIb3DQEBCwUAA4IBAQBv3oaB10QO
+        QCiuQ2m5Oq49AeCFrQSRw+zPYy15g5GlFzgodQhIIoHuvinBxhf1ioDlF7rdiHwd
+        myq9MfchSInIj2AAYVtYd5ZOnUSUCnTb4EjJfMWw7YBR8tS6QxgixwbKQQ+3gROQ
+        eVSjQLZfV4F4IeUESzbVwK8WgZGYJz2SVaoBbASoOJ/K6qeFijT/K782iQNQKTFS
+        DbSxs1hsyShsCaDN9KE9+49MsF3Ba/AoLFMb6tI5QmtGL5M61wZ90kO4PogXXbau
+        HH/JmU5U4gIUmo76xE31hwjM3Yjq/fpmj2CRdwWJkCCK4S4pS8x5EAPmuFR9PRcS
+        O4lWMVKcis5O
+        -----END CERTIFICATE-----
+      serverUrl: "https://kubernetes.docker.internal:6443"
+      skipTlsVerify: true
+      templates:
+      - containers:
+        - image: "node:lts-alpine"
+          livenessProbe:
+            failureThreshold: 0
+            initialDelaySeconds: 0
+            periodSeconds: 0
+            successThreshold: 0
+            timeoutSeconds: 0
+          name: "node-container"
+          workingDir: "/home/jenkins/agent"
+        id: "48075e49-f024-482c-aac2-a079bf72ac9f"
+        label: "node-runner"
+        name: "node-runner"
         namespace: "jenkins"
-        serverUrl: "https://kubernetes.docker.internal:6443"
+        serviceAccount: "jenkins"
+        yamlMergeStrategy: "override"
+      - containers:
+        - image: "maven:3.9.9-amazoncorretto-8-alpine"
+          livenessProbe:
+            failureThreshold: 0
+            initialDelaySeconds: 0
+            periodSeconds: 0
+            successThreshold: 0
+            timeoutSeconds: 0
+          name: "maven-runner"
+          workingDir: "/home/jenkins/agent"
+        id: "c8fab884-5c0c-417b-b30c-5152bf036ed9"
+        label: "maven-runner"
+        name: "maven-runner"
+        namespace: "jenkins"
+        serviceAccount: "jenkins"
+        yamlMergeStrategy: "override"
+      - containers:
+        - image: "alpine/git:latest"
+          livenessProbe:
+            failureThreshold: 0
+            initialDelaySeconds: 0
+            periodSeconds: 0
+            successThreshold: 0
+            timeoutSeconds: 0
+          name: "git"
+          workingDir: "/home/jenkins/agent"
+        id: "b5754acb-dd93-4666-839f-8be651c3bc3c"
+        label: "git"
+        name: "git"
+        namespace: "jenkins"
+        yamlMergeStrategy: "override"
+      - containers:
+        - image: "jenkins/inbound-agent:latest"
+          livenessProbe:
+            failureThreshold: 0
+            initialDelaySeconds: 0
+            periodSeconds: 0
+            successThreshold: 0
+            timeoutSeconds: 0
+          name: "jnlp"
+          privileged: true
+          runAsGroup: "0"
+          runAsUser: "0"
+          workingDir: "/home/jenkins/agent"
+        id: "4bcf490c-7c2b-4368-ac52-7c12c34c86be"
+        label: "jnlp"
+        name: "ci-agents"
+        namespace: "jenkins"
+        nodeUsageMode: NORMAL
+        podRetention: "onFailure"
+        runAsGroup: "0"
+        runAsUser: "0"
+        serviceAccount: "jenkins"
+        yamlMergeStrategy: "override"
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: false
-  numExecutors: 2
+  disableRememberMe: false
+  labelAtoms:
+  - name: "built-in"
+  - name: "git"
+  - name: "jnlp"
+  - name: "maven-runner"
+  - name: "node-runner"
+  markupFormatter: "plainText"
+  mode: EXCLUSIVE
+  myViewsTabBar: "standard"
+  nodeMonitors:
+  - "architecture"
+  - "clock"
+  - diskSpace:
+      freeSpaceThreshold: "1GiB"
+      freeSpaceWarningThreshold: "2GiB"
+  - "swapSpace"
+  - tmpSpace:
+      freeSpaceThreshold: "1GiB"
+      freeSpaceWarningThreshold: "2GiB"
+  - "responseTime"
+  numExecutors: 0
+  primaryView:
+    all:
+      name: "all"
+  projectNamingStrategy: "standard"
+  quietPeriod: 5
+  remotingSecurity:
+    enabled: true
+  scmCheckoutRetryCount: 0
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+      - id: "ankitc1"
+        name: "Ankit"
+        properties:
+        - "consoleUrlProvider"
+        - "myView"
+        - preferredProvider:
+            providerId: "default"
+        - theme:
+            theme: "noOp"
+        - "timezone"
+        - "experimentalFlags"
+        - mailer:
+            emailAddress: "ankit@falana.com"
+        - "apiToken"
+  slaveAgentPort: 50000
   updateCenter:
     sites:
-      - id: "default"
-        url: "https://updates.jenkins.io/update-center.json"
+    - id: "default"
+      url: "https://updates.jenkins.io/update-center.json"
   views:
-    - name: "All"
-      description: "All views"
+  - all:
+      name: "all"
+  viewsTabBar: "standard"
+globalCredentialsConfiguration:
+  configuration:
+    providerFilter: "none"
+    typeFilter: "none"
+appearance:
+  pipelineGraphView:
+    showGraphOnBuildPage: false
+    showGraphOnJobPage: false
+  prism:
+    theme: DARK
+  themeManager:
+    disableUserThemes: false
+    theme: "dark"
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
+  cps:
+    hideSandbox: false
+  gitHooks:
+    allowedOnAgents: false
+    allowedOnController: false
+  gitHostKeyVerificationConfiguration:
+    sshHostKeyVerificationStrategy: "knownHostsFileVerificationStrategy"
+  scriptApproval:
+    forceSandbox: false
+unclassified:
+  buildDiscarders:
+    configuredBuildDiscarders:
+    - "jobBuildDiscarder"
+  buildStepOperation:
+    enabled: false
+  email-ext:
+    adminRequiredForTemplateTesting: false
+    allowUnregisteredEnabled: false
+    charset: "UTF-8"
+    debugMode: false
+    defaultBody: |-
+      $PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:
+
+      Check console output at $BUILD_URL to view the results.
+    defaultSubject: "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!"
+    defaultTriggerIds:
+    - "hudson.plugins.emailext.plugins.trigger.FailureTrigger"
+    maxAttachmentSize: -1
+    maxAttachmentSizeMb: -1
+    precedenceBulk: false
+    throttlingEnabled: false
+    watchingEnabled: false
+  enrichedSummaryConfig:
+    enrichedSummaryEnabled: false
+    httpClientDelayBetweenRetriesInSeconds: 1
+    httpClientMaxRetries: 3
+    httpClientTimeoutInSeconds: 1
+  fingerprints:
+    fingerprintCleanupDisabled: false
+    storage: "file"
+  gitHubConfiguration:
+    apiRateLimitChecker: ThrottleForNormalize
+  gitHubPluginConfig:
+    hookUrl: "http://localhost:30080/github-webhook/"
+  globalTimeOutConfiguration:
+    operations:
+    - "abortOperation"
+    overwriteable: false
+  injectionConfig:
+    allowUntrusted: false
+    checkForBuildAgentErrors: false
+    enabled: false
+    enforceUrl: false
+    injectCcudExtension: false
+    injectMavenExtension: false
+  junitTestResultStorage:
+    storage: "file"
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+    url: "http://localhost:30080/"
+  mailer:
+    charset: "UTF-8"
+    useSsl: false
+    useTls: false
+  pollSCM:
+    pollingThreadCount: 10
+  scmGit:
+    addGitTagAction: false
+    allowSecondFetch: false
+    createAccountBasedOnEmail: false
+    disableGitToolChooser: false
+    hideCredentials: false
+    showEntireCommitSummaryInChanges: false
+    useExistingAccountWithSameEmail: false
+  timestamper:
+    allPipelines: false
+    elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '"
+    systemTimeFormat: "'<b>'HH:mm:ss'</b> '"
+tool:
+  git:
+    installations:
+    - home: "git"
+      name: "Default"
+  mavenGlobalConfig:
+    globalSettingsProvider: "standard"
+    settingsProvider: "standard"
 
 jobs:
   - pipelineJob:

@@ -1,60 +1,49 @@
 pipeline {
     agent {
         kubernetes {
-            yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    jenkins-agent: true
-spec:
-  containers:
-  - name: build-container
-    image: maven:3.8.5-openjdk-17
-    command: ["/bin/sh", "-c"]
-    args: ["cat"]
-    volumeMounts:
-      - mountPath: "/workspace"
-        name: workspace-volume
-  volumes:
-  - name: workspace-volume
-    persistentVolumeClaim:
-      claimName: jenkins-agent-pvc
-"""
+            inheritFrom 'git,nodejs-runner'  // Use pre-defined pod templates
         }
     }
-    
+
     stages {
         stage('Clone Repository') {
             steps {
-                script {
-                    sh 'git clone https://github.com/example/repo.git /workspace/repo'
+                container('git') {  // Use the 'git' container from the pod template
+                    sh 'git clone https://github.com/example/node-app.git $WORKSPACE/node-app'
                 }
             }
         }
 
-        stage('Build') {
+        stage('Install Dependencies') {
             steps {
-                container('build-container') {
-                    sh 'cd /workspace/repo && mvn clean install'
+                container('nodejs-runner') {  // Use the 'nodejs-runner' container
+                    sh 'cd $WORKSPACE/node-app && npm install'
                 }
             }
         }
 
-        stage('Test') {
-            steps {
-                container('build-container') {
-                    sh 'cd /workspace/repo && mvn test'
-                }
-            }
-        }
+        // stage('Run Tests') {
+        //     steps {
+        //         container('nodejs-runner') {
+        //             sh 'cd $WORKSPACE/node-app && npm test'
+        //         }
+        //     }
+        // }
 
-        stage('Deploy') {
-            steps {
-                container('build-container') {
-                    sh 'cd /workspace/repo && mvn deploy'
-                }
-            }
-        }
+        // stage('Build') {
+        //     steps {
+        //         container('nodejs-runner') {
+        //             sh 'cd $WORKSPACE/node-app && npm run build'
+        //         }
+        //     }
+        // }
+
+        // stage('Deploy') {
+        //     steps {
+        //         container('nodejs-runner') {
+        //             sh 'cd $WORKSPACE/node-app && npm run deploy'
+        //         }
+        //     }
+        // }
     }
 }

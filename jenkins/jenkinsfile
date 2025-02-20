@@ -8,8 +8,10 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                container('git') {  // Use the 'git' container from the pod template
-                    sh 'git clone https://github.com/example/node-app.git $WORKSPACE/node-app'
+                container('git') {
+                    withCredentials([usernamePassword(credentialsId: 'git-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        sh 'git clone https://$GIT_USER:$GIT_PASS@github.com/example/node-app.git $WORKSPACE/node-app'
+                    }
                 }
             }
         }

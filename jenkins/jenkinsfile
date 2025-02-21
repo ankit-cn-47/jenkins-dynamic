@@ -1,25 +1,58 @@
 pipeline {
-    agent {
-        kubernetes {
-            inheritFrom 'git,nodejs-runner'  // Use pre-defined pod templates
-        }
-    }
-
+    agent none
     stages {
         stage('Clone Repository') {
+            agent {
+            kubernetes {
+                label 'git-agent'
+                yaml """
+                apiVersion: v1
+                kind: Pod
+                metadata:
+                labels:
+                    jenkins-agent: true
+                spec:
+                containers:
+                - name: git
+                    image: alpine/git:v2.47.2  node:lts-alpine
+                    command:
+                    - cat
+                    tty: true
+                """
+                }
+            }
             steps {
                 container('git') {
-                    withCredentials([usernamePassword(credentialsId: 'git-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
-                        sh 'git clone https://$GIT_USER:$GIT_PASS@github.com/example/node-app.git $WORKSPACE/node-app'
+                    withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        sh 'git clone https://$GIT_USER:$GIT_PASS@github.com/example/node-app.git $WORKSPACE'
                     }
                 }
             }
         }
 
         stage('Install Dependencies') {
+            agent {
+            kubernetes {
+                label 'node-agent'
+                yaml """
+                apiVersion: v1
+                kind: Pod
+                metadata:
+                labels:
+                    jenkins-agent: true
+                spec:
+                containers:
+                - name: node
+                    image: node:lts-alpine
+                    command:
+                    - cat
+                    tty: true
+                """
+                }
+            }
             steps {
-                container('nodejs-runner') {  // Use the 'nodejs-runner' container
-                    sh 'cd $WORKSPACE/node-app && npm install'
+                container('node') {  // Use the 'nodejs-runner' container
+                    sh 'cd $WORKSPACE/application && npm install'
                 }
             }
         }

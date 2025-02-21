@@ -6,18 +6,18 @@ pipeline {
             kubernetes {
                 label 'git-agent'
                 yaml """
-                apiVersion: v1
-                kind: Pod
-                metadata:
-                labels:
-                    jenkins-agent: true
-                spec:
-                containers:
-                - name: git
-                    image: alpine/git:v2.47.2  node:lts-alpine
-                    command:
-                    - cat
-                    tty: true
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    jenkins-agent: true
+spec:
+  containers:
+  - name: git
+    image: alpine/git:v2.47.2
+    command:
+    - cat
+    tty: true
                 """
                 }
             }
@@ -35,18 +35,18 @@ pipeline {
             kubernetes {
                 label 'node-agent'
                 yaml """
-                apiVersion: v1
-                kind: Pod
-                metadata:
-                labels:
-                    jenkins-agent: true
-                spec:
-                containers:
-                - name: node
-                    image: node:lts-alpine
-                    command:
-                    - cat
-                    tty: true
+apiVersion: v1
+kind: Pod
+metadata:
+labels:
+    jenkins-agent: true
+spec:
+    containers:
+    - name: node
+        image: node:18.20.7-alpine3.21
+        command:
+        - cat
+        tty: true
                 """
                 }
             }
